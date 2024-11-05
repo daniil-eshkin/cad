@@ -1,0 +1,9 @@
+grid:
+  starting_point:
+    x: 0
+    y: 0
+    z: 0
+  length: 100
+wire_width: 10
+default_distance: 100
+distances:
