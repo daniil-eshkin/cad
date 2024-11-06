@@ -1,15 +1,4 @@
-Используемые библиотеки:
-
-```
-numpy
-sklearn
-progressbar
-meshlib
-json
-yaml
-pyvista
-collections
-```
+Версия Python: 3.10.12
 
 Формат модели:
 ```
