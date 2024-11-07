@@ -2,9 +2,10 @@ import numpy as np
 import json
 import yaml
 
-from cad.util import Box, Fig
+from cad.box import Fig, calculate_bounding_box, calculate_bounding_box_of_one_fig
 
-def parse_fig(data):
+
+def parse_fig(data, conf):
     vertices = np.array(np.array_split(data['Coords'], len(data['Coords']) // 3)) * 1.0
     faces = np.array(np.array_split(data['Indices'], len(data['Indices']) // 3))
 
@@ -12,43 +13,14 @@ def parse_fig(data):
         vertices=vertices,
         faces=faces,
         category=data['Category'],
-    )
-
-
-def calculate_bounding_box(figs, conf):
-    min_x = 1000000000
-    min_y = 1000000000
-    min_z = 1000000000
-    max_x = -1000000000
-    max_y = -1000000000
-    max_z = -1000000000
-
-    for fig in figs:
-        if fig.category in conf['distances']:
-            allowed_distance = conf['distances'][fig.category]
-        else:
-            allowed_distance = conf['default_distance']
-        for x, y, z in fig.vertices:
-            min_x = min(min_x, x)
-            min_y = min(min_y, y)
-            min_z = min(min_z, z - allowed_distance)
-            max_x = max(max_x, x)
-            max_y = max(max_y, y)
-            max_z = max(max_z, z)
-    return Box(
-        min_x=min_x,
-        max_x=max_x,
-        min_y=min_y,
-        max_y=max_y,
-        min_z=min_z,
-        max_z=max_z,
+        box=calculate_bounding_box_of_one_fig(vertices, data['Category'], conf),
     )
 
 
 def parse_model(path, conf):
     with open(path, 'r') as file:
         data = json.load(file)
-    figs = list(map(parse_fig, data))
+    figs = list(map(lambda f: parse_fig(f, conf), data))
 
     return (list(filter(lambda f: f.category == 'Floors', figs))
             , list(filter(lambda f: f.category != 'Floors', figs))

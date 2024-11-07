@@ -2,6 +2,7 @@ import unittest
 
 from cad.grid import *
 from cad.util import *
+from cad.box import *
 
 class GridTest(unittest.TestCase):
 
@@ -24,23 +25,6 @@ class GridTest(unittest.TestCase):
             },
         }
 
-        model = [
-            Fig(
-                vertices=np.array([[0, 0, 0],
-                                   [0, 2, 0],
-                                   [0, 0, 2]], dtype=np.float32),
-                faces=np.array([[0, 1, 2]]),
-                category="Floors"
-            ),
-            Fig(
-                vertices=np.array([[3, 0, 0],
-                                   [3, 2, 0],
-                                   [3, 0, 2]], dtype=np.float32),
-                faces=np.array([[0, 1, 2]]),
-                category="Objs"
-            ),
-        ]
-
         box = Box(
             min_x=0,
             max_x=3,
@@ -49,6 +33,26 @@ class GridTest(unittest.TestCase):
             min_z=0,
             max_z=2,
         )
+
+        model = [
+            Fig(
+                vertices=np.array([[0, 0, 0],
+                                   [0, 2, 0],
+                                   [0, 0, 2]], dtype=np.float32),
+                faces=np.array([[0, 1, 2]]),
+                category="Floors",
+                box=box,
+            ),
+            Fig(
+                vertices=np.array([[3, 0, 0],
+                                   [3, 2, 0],
+                                   [3, 0, 2]], dtype=np.float32),
+                faces=np.array([[0, 1, 2]]),
+                category="Objs",
+                box=box,
+            ),
+        ]
+
         x = np.arange(box.min_x, box.max_x + 1, 1, dtype=np.float32)
         y = np.arange(box.min_y, box.max_y + 1, 1, dtype=np.float32)
         z = np.arange(box.min_z, box.max_z + 1, 1, dtype=np.float32)
